@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Lenovo/Documents/work/hello_world/main
+# Install script for directory: C:/Users/Lenovo/Documents/work/ttn-ota-Copie1/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

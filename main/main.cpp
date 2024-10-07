@@ -1,35 +1,14 @@
-/*******************************************************************************
- * 
- * ttn-esp32 - The Things Network device library for ESP-IDF / SX127x
- * 
- * Copyright (c) 2018 Manuel Bleichenbacher
- * 
- * Licensed under MIT License
- * https://opensource.org/licenses/MIT
- *
- * Sample program showing how to send and receive messages.
- *******************************************************************************/
-
 #include "freertos/FreeRTOS.h"
 #include "esp_event.h"
 #include "driver/gpio.h"
 #include "nvs_flash.h"
 #include <string.h>
-
+#include "led_control.h"  // Include the LED control header
 #include "TheThingsNetwork.h"
 
-// NOTE:
-// The LoRaWAN frequency and the radio chip must be configured by running 'idf.py menuconfig'.
-// Go to Components / The Things Network, select the appropriate values and save.
-
-// Copy the below hex strings from the TTN console (Applications > Your application > End devices
-// > Your device > Activation information)
-
-// AppEUI (sometimes called JoinEUI)
+// LoRaWAN configuration
 const char *appEui = "2440c0489c8ebd8b";
-// DevEUI
 const char *devEui = "cf8e254f35de8a54";
-// AppKey
 const char *appKey = "3b45c3e91a2c7c3c12345779b5238774";
 
 // Pins and other resources
@@ -44,11 +23,13 @@ const char *appKey = "3b45c3e91a2c7c3c12345779b5238774";
 #define TTN_PIN_DIO0      26
 #define TTN_PIN_DIO1      33
 
+// LED Pin Configuration
+const gpio_num_t LED_PIN = GPIO_NUM_2;  // Change this to your actual LED pin
+
 static TheThingsNetwork ttn;
 
 const unsigned TX_INTERVAL = 30;
 static uint8_t msgData[] = "Hello, world";
-
 
 void sendMessages(void* pvParameter)
 {
@@ -63,15 +44,16 @@ void sendMessages(void* pvParameter)
 
 void messageReceived(const uint8_t* message, size_t length, ttn_port_t port)
 {
-    printf("Message of %d bytes received on port %d:", length, port);
-    for (int i = 0; i < length; i++)
-        printf(" %02x", message[i]);
-    printf("\n");
+    controlLED(message, length);  // Call the LED control function
 }
 
 extern "C" void app_main(void)
 {
     esp_err_t err;
+
+    // Initialize the GPIO
+      initializeLED(LED_PIN);
+
     // Initialize the GPIO ISR handler service
     err = gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
     ESP_ERROR_CHECK(err);
@@ -92,15 +74,11 @@ extern "C" void app_main(void)
     // Configure the SX127x pins
     ttn.configurePins(TTN_SPI_HOST, TTN_PIN_NSS, TTN_PIN_RXTX, TTN_PIN_RST, TTN_PIN_DIO0, TTN_PIN_DIO1);
 
-    // The below line can be commented after the first run as the data is saved in NVS
+    // Provision the device
     ttn.provision(devEui, appEui, appKey);
 
     // Register callback for received messages
     ttn.onMessage(messageReceived);
-
-//    ttn.setAdrEnabled(false);
-//    ttn.setDataRate(kTTNDataRate_US915_SF7);
-//    ttn.setMaxTxPower(14);
 
     printf("Joining...\n");
     if (ttn.join())

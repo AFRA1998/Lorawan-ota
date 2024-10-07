@@ -318,7 +318,7 @@ rule C_STATIC_LIBRARY_LINKER____idf_main_
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\Users\Lenovo\.espressif\tools\cmake\3.30.2\bin\cmake.exe --regenerate-during-build -SC:\Users\Lenovo\Documents\esp-idf\components\bootloader\subproject -BC:\Users\Lenovo\Documents\work\hello_world\build\bootloader
+  command = C:\Users\Lenovo\.espressif\tools\cmake\3.30.2\bin\cmake.exe --regenerate-during-build -SC:\Users\Lenovo\Documents\esp-idf\components\bootloader\subproject -BC:\Users\Lenovo\Documents\work\ttn-ota-Copie1\build\bootloader
   description = Re-running CMake...
   generator = 1
 

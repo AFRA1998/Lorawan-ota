@@ -1,4 +1,4 @@
-/* * Data converted from C:/Users/Lenovo/Documents/work/hello_world/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from C:/Users/Lenovo/Documents/work/ttn-ota-Copie1/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded
